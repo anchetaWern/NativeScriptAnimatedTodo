@@ -1,0 +1,45 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+      xmlns:shared="shared" loaded="pageLoaded"
+      xmlns:x="nativescript-statusbar" backgroundSpanUnderStatusBar="true">
+  <StackLayout class="main" stretch="fill">
+    <Label text="todos" class="title" id="header" />
+    <GridLayout columns="30, *" rows="auto" class="new-item">
+        <label text="&#xf078;" class="{{ selectAll ? 'icon chevron chevron-bold' : 'icon chevron' }}" tap="toggleSelectAll" col="0" visibility="{{ hasItems() ? 'visible' : 'collapsed' }}" />
+        <TextField class="new-item" text="{{ newTodo }}" returnKeyType="done" returnPress="add" col="1"/>
+    </GridLayout>
+    <StackLayout class="hr-bold"></StackLayout>
+    <ScrollView id="main">
+        <StackLayout>
+            <Repeater items="{{ todos | filterCompleted() }}">
+                <Repeater.itemTemplate>
+                    <AbsoluteLayout swipe="onSwipe">
+                       
+                        <GridLayout left="{{ is_new ? -300 : 0 }}" columns="30, *, auto" rows="auto" class="{{ is_new ? 'todo is-new' : (is_removed) ? 'todo is-removed' : 'todo' }}">
+                            <label id="{{ id }}" text="{{ completed ? '&#xf058;' : '&#xf1db;' }}" class="{{ completed ? 'icon circles-completed' : 'icon circles' }}" col="0" tap="check" />
+                            <TextField text="{{ text }}" col="1" class="{{ completed ? 'item completed' : 'item active' }}"></TextField>
+                            <Button id="{{ id }}" text="&#xf00d;" col="2" tap="remove" ios:class="icon remove-button" android:class="icon remove-button button-android"></Button>
+                        </GridLayout>
+                        <StackLayout class="hr"></StackLayout>
+
+                    </AbsoluteLayout>
+                </Repeater.itemTemplate>        
+            </Repeater>
+            <StackLayout class="summary" visibility="{{ hasItems() ? 'visible' : 'collapsed' }}">
+                <GridLayout columns="80, *, 160" class="todo-summary" rows="auto, auto">
+                    <Label text="{{ itemsLeft() + ' items left'}}" col="0" />
+                    <Label text="Clear Completed" col="2" tap="{{ clearCompleted }}" android:class="button" class="right" visibility="{{ hasCompletedItems() ? 'visible' : 'collapsed' }}"/>
+                    <SegmentedBar row="1" colspan="3" class="toggles" selectedIndexChanged="filter" selectedBackgroundColor="#B76769">
+                        <SegmentedBar.items>
+                            <SegmentedBarItem title="All" />
+                            <SegmentedBarItem title="Active" completed="false" />
+                            <SegmentedBarItem title="Done" completed="true" />
+                        </SegmentedBar.items>
+                    </SegmentedBar>
+                </GridLayout>
+                <StackLayout class="hr"></StackLayout>
+                <shared:stacked-pages />
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
+  </StackLayout>
+</Page>
